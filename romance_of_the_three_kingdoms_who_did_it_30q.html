@@ -1,0 +1,829 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>《三國演義》人物事蹟對號入座測驗（30題）</title>
+  <style>
+    :root {
+      --bg-primary: #14110f;
+      --bg-card: #1f1a16;
+      --bg-option: #2a231d;
+      --bg-option-hover: #382e26;
+      --accent-gold: #d4af37;
+      --accent-red: #9e2a2b;
+      --text-main: #f3ece1;
+      --text-muted: #b8ab9a;
+      --border-color: #3f342b;
+      --correct: #2e7d32;
+      --correct-bg: rgba(46, 125, 50, 0.18);
+      --wrong: #c62828;
+      --wrong-bg: rgba(198, 40, 40, 0.18);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: "Noto Serif TC", "PingFang TC", "Microsoft JhengHei", Georgia, serif;
+      background: radial-gradient(circle at top, #261e18 0%, var(--bg-primary) 75%);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      line-height: 1.65;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 780px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 14px;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+      overflow: hidden;
+    }
+
+    header {
+      background: linear-gradient(135deg, #2d1b18 0%, #1c1613 100%);
+      border-bottom: 2px solid var(--accent-gold);
+      padding: 26px 32px;
+      text-align: center;
+    }
+
+    header .subtitle {
+      font-size: 0.82rem;
+      letter-spacing: 0.2em;
+      color: var(--accent-gold);
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+
+    header h1 {
+      font-size: 1.72rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      color: #fff8eb;
+    }
+
+    .progress-wrap {
+      background: #14100d;
+      height: 6px;
+      width: 100%;
+    }
+
+    .progress-bar {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--accent-red), var(--accent-gold));
+      transition: width 0.35s ease;
+    }
+
+    .content {
+      padding: 30px 32px;
+    }
+
+    .meta-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 18px;
+      font-size: 0.92rem;
+      color: var(--text-muted);
+    }
+
+    .badge {
+      background: rgba(212, 175, 55, 0.14);
+      border: 1px solid rgba(212, 175, 55, 0.4);
+      color: var(--accent-gold);
+      padding: 3px 12px;
+      border-radius: 999px;
+      font-size: 0.85rem;
+    }
+
+    .question-text {
+      font-size: 1.2rem;
+      font-weight: 600;
+      margin-bottom: 22px;
+      color: #fbf6ee;
+    }
+
+    .options {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    @media (max-width: 560px) {
+      .options { grid-template-columns: 1fr; }
+    }
+
+    .option-btn {
+      width: 100%;
+      text-align: left;
+      background: var(--bg-option);
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+      padding: 15px 18px;
+      border-radius: 10px;
+      font-size: 1.04rem;
+      font-family: inherit;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      line-height: 1.45;
+    }
+
+    .option-btn:hover:not(:disabled) {
+      background: var(--bg-option-hover);
+      border-color: var(--accent-gold);
+      transform: translateY(-1px);
+    }
+
+    .option-btn:disabled {
+      cursor: default;
+    }
+
+    .option-prefix {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid var(--border-color);
+      font-weight: 700;
+      font-size: 0.86rem;
+      color: var(--accent-gold);
+    }
+
+    .option-btn.correct {
+      background: var(--correct-bg);
+      border-color: var(--correct);
+      color: #e8f5e9;
+    }
+
+    .option-btn.correct .option-prefix {
+      background: var(--correct);
+      border-color: var(--correct);
+      color: #fff;
+    }
+
+    .option-btn.wrong {
+      background: var(--wrong-bg);
+      border-color: var(--wrong);
+      color: #ffebee;
+    }
+
+    .option-btn.wrong .option-prefix {
+      background: var(--wrong);
+      border-color: var(--wrong);
+      color: #fff;
+    }
+
+    .feedback-box {
+      margin-top: 18px;
+      padding: 15px 18px;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.04);
+      border-left: 4px solid var(--accent-gold);
+      font-size: 0.94rem;
+      color: var(--text-muted);
+      display: none;
+    }
+
+    .feedback-box strong {
+      color: var(--text-main);
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    .actions {
+      margin-top: 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .actions-right {
+      display: flex;
+      gap: 12px;
+      margin-left: auto;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #b83227 0%, #8a1f17 100%);
+      color: #fff;
+      border: 1px solid #d4af37;
+      padding: 11px 24px;
+      border-radius: 8px;
+      font-size: 0.98rem;
+      font-family: inherit;
+      font-weight: 600;
+      cursor: pointer;
+      transition: opacity 0.2s, transform 0.15s;
+    }
+
+    .btn-primary:hover {
+      opacity: 0.92;
+      transform: translateY(-1px);
+    }
+
+    .btn-secondary {
+      background: transparent;
+      color: var(--text-muted);
+      border: 1px solid var(--border-color);
+      padding: 11px 18px;
+      border-radius: 8px;
+      font-size: 0.92rem;
+      font-family: inherit;
+      cursor: pointer;
+    }
+
+    .btn-secondary:hover {
+      border-color: var(--accent-gold);
+      color: var(--text-main);
+    }
+
+    .center-screen {
+      text-align: center;
+      padding: 12px 6px;
+    }
+
+    .center-screen p {
+      color: var(--text-muted);
+      max-width: 580px;
+      margin: 0 auto 24px;
+      font-size: 1.02rem;
+    }
+
+    .mode-options {
+      display: flex;
+      justify-content: center;
+      gap: 14px;
+      flex-wrap: wrap;
+      margin-bottom: 24px;
+    }
+
+    .score-circle {
+      width: 140px;
+      height: 140px;
+      border-radius: 50%;
+      border: 3px solid var(--accent-gold);
+      background: radial-gradient(circle, rgba(212, 175, 55, 0.16), transparent 70%);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      margin: 0 auto 18px;
+    }
+
+    .score-num {
+      font-size: 2.4rem;
+      font-weight: 700;
+      color: var(--accent-gold);
+      line-height: 1.1;
+    }
+
+    .score-total {
+      font-size: 0.88rem;
+      color: var(--text-muted);
+    }
+
+    .rank-title {
+      font-size: 1.45rem;
+      color: #fff8eb;
+      margin-bottom: 8px;
+    }
+
+    .review-controls {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 22px;
+      flex-wrap: wrap;
+    }
+
+    .filter-btn {
+      background: var(--bg-option);
+      color: var(--text-muted);
+      border: 1px solid var(--border-color);
+      padding: 6px 14px;
+      border-radius: 999px;
+      font-size: 0.85rem;
+      font-family: inherit;
+      cursor: pointer;
+    }
+
+    .filter-btn.active {
+      border-color: var(--accent-gold);
+      color: var(--accent-gold);
+      background: rgba(212, 175, 55, 0.12);
+    }
+
+    .review-list {
+      text-align: left;
+      margin-top: 16px;
+      border-top: 1px solid var(--border-color);
+      padding-top: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      max-height: 400px;
+      overflow-y: auto;
+      padding-right: 6px;
+    }
+
+    .review-item {
+      background: var(--bg-option);
+      padding: 13px 16px;
+      border-radius: 8px;
+      border-left: 4px solid var(--border-color);
+      font-size: 0.9rem;
+    }
+
+    .review-item.is-correct { border-left-color: var(--correct); }
+    .review-item.is-wrong { border-left-color: var(--wrong); }
+
+    .review-q {
+      font-weight: 600;
+      margin-bottom: 5px;
+      color: var(--text-main);
+    }
+
+    .review-ans {
+      color: var(--text-muted);
+      font-size: 0.86rem;
+    }
+
+    @media (max-width: 600px) {
+      .content { padding: 20px 16px; }
+      header { padding: 20px 16px; }
+      header h1 { font-size: 1.42rem; }
+      .question-text { font-size: 1.08rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="subtitle">Romance of the Three Kingdoms · Who Did It?</div>
+      <h1>《三國演義》人物事蹟對號入座（30題）</h1>
+    </header>
+    <div class="progress-wrap">
+      <div class="progress-bar" id="progressBar"></div>
+    </div>
+    <div class="content" id="app"></div>
+  </div>
+
+  <script>
+    const RAW_QUIZ_DATA = [
+      {
+        category: "經典事件",
+        question: "在「溫酒斬華雄」一節中，是哪一位將領在酒尚未冷卻之際便策馬出陣斬殺華雄並提頭而歸？",
+        options: ["張飛", "趙雲", "關羽", "孫堅"],
+        answer: 2,
+        explanation: "當時關羽尚為馬弓手，曹操斟熱酒相送，關羽稱「酒且斟下，某去便來」，片刻便斬華雄而回，酒尚溫熱。"
+      },
+      {
+        category: "經典事件",
+        question: "在當陽長坂橋上，是哪一位武將獨自橫矛立馬，大喝三聲嚇退曹軍並使夏侯傑驚懼墜馬而亡？",
+        options: ["趙雲", "張飛", "關羽", "黃忠"],
+        answer: 1,
+        explanation: "張飛於長坂橋頭斷後，利用樹林揚塵疑兵之計，三聲怒喝震懾曹軍，夏侯傑肝膽碎裂墜馬身亡。"
+      },
+      {
+        category: "經典事件",
+        question: "在赤壁之戰前夕，周瑜與哪一位東吳老將合演「苦肉計」，當眾責打脊杖以騙取曹操相信其真心投降？",
+        options: ["程普", "韓當", "黃蓋", "祖茂"],
+        answer: 2,
+        explanation: "黃蓋甘受皮肉之苦，隨後藉「詐降」駕駛裝滿引火之物的船隊接近曹營，成為赤壁火攻的關鍵執行者。"
+      },
+      {
+        category: "經典事件",
+        question: "在長坂坡亂軍之中七進七出，懷揣幼主劉禪（阿斗）殺出重圍並將其安全交還劉備的是哪一位將領？",
+        options: ["馬超", "魏延", "張飛", "趙雲"],
+        answer: 3,
+        explanation: "趙雲於長坂坡單騎救主，連斬曹營名將五十餘員，成功救出甘夫人與幼主阿斗。"
+      },
+      {
+        category: "經典事件",
+        question: "在官渡之戰期間，原本效力袁紹卻因不受重用且家人被下獄而連夜投奔曹操，並獻計火燒烏巢糧倉的謀士是誰？",
+        options: ["郭嘉", "荀攸", "許攸", "沮授"],
+        answer: 2,
+        explanation: "許攸與曹操為舊識，夜投曹營後建議曹操輕騎奇襲袁紹屯糧重地烏巢，直接扭轉官渡戰局。"
+      },
+      {
+        category: "經典事件",
+        question: "在司徒王允設計的「連環計」中，周旋於董卓與呂布之間並成功挑起二人反目而除掉董卓的是哪一位人物？",
+        options: ["甄宓", "貂蟬", "大喬", "孫尚香"],
+        answer: 1,
+        explanation: "貂蟬先許呂布、再獻董卓，於鳳儀亭挑動呂布怒火，最終促使呂布親手刺殺董卓。"
+      },
+      {
+        category: "經典事件",
+        question: "曹操發兵攻打徐州為父報仇時，是哪一位在野英雄應陶謙之請、單騎衝破曹軍包圍向劉備求援，後來又與孫策在神亭嶺酣戰？",
+        options: ["甘寧", "周泰", "太史慈", "凌統"],
+        answer: 2,
+        explanation: "太史慈因感念孔融照顧其母之恩，受孔融之託突圍往平原請劉備救援徐州，展現驚人箭術與膽識。"
+      },
+      {
+        category: "經典事件",
+        question: "赤壁之戰前，自以為與周瑜有同窗之誼而過江充當說客，卻反中周瑜反間計盜走假書信導致曹操斬殺蔡瑁、張允的是誰？",
+        options: ["蔣幹", "華歆", "陳琳", "王朗"],
+        answer: 0,
+        explanation: "「蔣幹盜書」中，蔣幹自詡辯才無雙，反被周瑜設局誘騙，讓曹操誤殺精通水戰的降將蔡瑁與張允。"
+      },
+      {
+        category: "經典事件",
+        question: "在呂布與曹軍交戰時左眼中箭，大呼「父精母血，不可棄也」並拔箭吞下眼珠、隨後一槍刺死敵將曹性的是哪一位魏將？",
+        options: ["夏侯淵", "許褚", "典韋", "夏侯惇"],
+        answer: 3,
+        explanation: "夏侯惇「拔矢啖睛」是演義中最著名的悍勇橋段之一，令兩軍將士無不駭然。"
+      },
+      {
+        category: "經典事件",
+        question: "在宛城之戰中，曹操因納張繡嬸母鄒氏引發張繡夜襲，為掩護曹操逃走而雙戟被盜、力戰至死守住寨門的護衛猛將是誰？",
+        options: ["許褚", "徐晃", "典韋", "龐德"],
+        answer: 2,
+        explanation: "典韋在兵器被胡車兒盜走後，仍徒手奪刀死戰不退，身中數十創猶立而不倒，保得曹操脫險。"
+      },
+      {
+        category: "經典事件",
+        question: "東吳哪一位將領最初只是一介武夫，經孫權勸學後「士別三日，即更刮目相看」，並在襄樊之戰中「白衣渡江」奇襲奪取荊州？",
+        options: ["陸遜", "呂蒙", "魯肅", "徐盛"],
+        answer: 1,
+        explanation: "呂蒙勤學成才後謀略深沉，趁關羽北攻襄樊時以白衣商船偷渡長江，一舉襲取荊州並擒殺關羽。"
+      },
+      {
+        category: "經典事件",
+        question: "在夷陵之戰中，最初被東吳老將輕視為「書生」，卻能隱忍數月並最終以「火燒連營七百里」大破劉備大軍的東吳統帥是誰？",
+        options: ["周瑜", "呂蒙", "諸葛瑾", "陸遜"],
+        answer: 3,
+        explanation: "陸遜冷靜判斷劉備在暑熱中移營入林犯了兵家大忌，果斷放火焚營，使蜀軍全線崩潰。"
+      },
+      {
+        category: "經典事件",
+        question: "在《三國演義》中，曾任曹操主簿，因屢次猜透曹操「一合酥」、「闊字」與「雞肋」等心思，最終被曹操以擾亂軍心罪名處斬的是誰？",
+        options: ["楊修", "孔融", "禰衡", "崔琰"],
+        answer: 0,
+        explanation: "楊修才思敏捷卻不懂藏拙，頻頻揭穿曹操心機並捲入立儲之爭，最終在漢中前線被曹操處決。"
+      },
+      {
+        category: "經典事件",
+        question: "定軍山之戰中，哪一位蜀漢老將採納法正「以逸待勞」之計，居高臨下突襲並一刀斬殺曹魏名將夏侯淵？",
+        options: ["嚴顏", "黃忠", "魏延", "廖化"],
+        answer: 1,
+        explanation: "黃忠在定軍山奪取對山高地後，趁夏侯淵怠備之際俯衝而下將其斬殺，為劉備奪取漢中立下頭功。"
+      },
+      {
+        category: "經典事件",
+        question: "在合肥逍遙津之戰中，以八百步卒突襲孫權十萬大軍並差點活捉孫權，從此留下「止啼」威名的曹魏名將是誰？",
+        options: ["張郃", "于禁", "樂進", "張遼"],
+        answer: 3,
+        explanation: "張遼依據曹操留下的錦囊妙計，在孫權大軍未集結前主動出擊，殺得江東軍心膽俱裂。"
+      },
+      {
+        category: "經典事件",
+        question: "在潼關之戰中殺得曹操「割鬚棄袍」，卻在隨後中了賈詡離間計而揮劍砍斷盟友韓遂左手的西涼猛將是誰？",
+        options: ["龐德", "馬岱", "馬超", "韓遂"],
+        answer: 2,
+        explanation: "馬超武藝驚人逼得曹操狼狽逃竄，但因性格多疑暴躁，輕信塗改書信而與韓遂內訌自潰。"
+      },
+      {
+        category: "經典事件",
+        question: "在《三國演義》中，裸衣與馬超酣戰百合不分勝負，並在曹操渡河遇襲時一手舉馬鞍為曹操擋箭的「虎癡」是哪一位將領？",
+        options: ["典韋", "曹仁", "許褚", "曹洪"],
+        answer: 2,
+        explanation: "許褚力大無窮且對曹操忠心耿耿，渭水護主與裸衣鬥馬超皆為其代表事蹟。"
+      },
+      {
+        category: "經典事件",
+        question: "在水淹七軍之戰中，面對關羽勸降時寧死不屈、罵不絕口，最終引頸受戮而贏得關羽敬重的曹魏將領是誰（與投降的于禁形成鮮明對比）？",
+        options: ["龐德", "徐晃", "曹仁", "滿寵"],
+        answer: 0,
+        explanation: "龐德出征前便抬棺決死，被擒後堅決不降；而主將于禁卻跪地求饒，二人氣節高下立判。"
+      },
+      {
+        category: "經典事件",
+        question: "劉備白帝城託孤後，是哪一位原本鎮守天水的曹魏年輕將領在諸葛亮北伐時智計出眾，歸降蜀漢後成為諸葛亮衣缽傳人並「九伐中原」？",
+        options: ["鄧艾", "鍾會", "姜維", "王平"],
+        answer: 2,
+        explanation: "姜維在天水識破諸葛亮計策，後遭馬遵猜忌而歸順蜀漢，成為諸葛亮逝世後支撐蜀漢北伐的核心統帥。"
+      },
+      {
+        category: "經典事件",
+        question: "在魏滅蜀之戰中，率領精兵偷渡陰平險道、裹氈滾下山坡奇襲江油，最終兵臨成都迫使後主劉禪開城投降的魏將是誰？",
+        options: ["鍾會", "司馬昭", "羊祜", "鄧艾"],
+        answer: 3,
+        explanation: "鄧艾在主力被姜維阻於劍閣時，果斷走無人小道偷渡陰平直取成都，一舉滅亡蜀漢。"
+      },
+      {
+        category: "經典事件",
+        question: "在《三國演義》中，赤壁戰前於東吳舌戰群儒，並與周瑜在掌心不約而同寫下「火」字以定破曹大計的蜀漢軍師是誰？",
+        options: ["龐統", "諸葛亮", "徐庶", "法正"],
+        answer: 1,
+        explanation: "諸葛亮出使江東促成孫劉聯盟，與周瑜同寫「火」字展現英雄所見略同的默契。"
+      },
+      {
+        category: "經典事件",
+        question: "道號「鳳雛」，曾向曹操獻上「連環計」使曹軍將戰船用鐵索相連，後來在入川之戰中於「落鳳坡」中伏身亡的是哪一位謀士？",
+        options: ["徐庶", "法正", "龐統", "馬良"],
+        answer: 2,
+        explanation: "龐統先在赤壁助東吳一臂之力獻連環計，後輔佐劉備入蜀時因急於立功走小路而在落鳳坡遇害。"
+      },
+      {
+        category: "經典事件",
+        question: "最初化名「單福」輔佐劉備大破曹仁八門金鎖陣，後因曹操偽造其母書信召其北上，臨行前向劉備推薦諸葛亮（「走馬薦諸葛」）的是誰？",
+        options: ["司馬徽", "崔州平", "石廣元", "徐庶"],
+        answer: 3,
+        explanation: "徐庶極為孝順，被迫離開劉備赴許昌前特意回馬推薦臥龍諸葛亮，成為劉備集團命運的重要轉折點。"
+      },
+      {
+        category: "經典事件",
+        question: "在《三國演義》中，先後跟隨丁原與董卓，擁有赤兔馬與方天畫戟，最終在白門樓被曹操下令縊殺的「三姓家奴」是誰？",
+        options: ["華雄", "呂布", "顏良", "文醜"],
+        answer: 1,
+        explanation: "呂布武藝天下第一卻反覆無常、背信棄義，最終在下邳被部下綁縛獻給曹操而喪命。"
+      },
+      {
+        category: "經典事件",
+        question: "在諸葛亮逝世於五丈原後，違背軍令燒毀棧道並舉兵反叛，最終在陣前大喊「誰敢殺我」時被潛伏在旁的馬岱一刀斬殺的蜀將是誰？",
+        options: ["楊儀", "魏延", "李嚴", "孟達"],
+        answer: 1,
+        explanation: "諸葛亮生前早料到魏延必反，留下錦囊交予楊儀與馬岱，在魏延得意忘形連喊三聲「誰敢殺我」之際將其斬殺。"
+      },
+      {
+        category: "經典事件",
+        question: "在《三國演義》中，曾被曹操讚為「吾之子房」，卻因反對曹操進位魏公、加九錫而與曹操決裂，最終收到空食盒後服毒自盡的謀士是誰？",
+        options: ["程昱", "賈詡", "荀彧", "劉曄"],
+        answer: 2,
+        explanation: "荀彧畢生心繫漢室，無法接受曹操代漢自立的野心，見曹操送來空食盒便明白君臣恩義已絕。"
+      },
+      {
+        category: "經典事件",
+        question: "在赤壁之戰前夕，為護送孫權突圍而身披數十創、宛如「血人」般死戰不退，事後孫權在宴席上令其脫衣指傷敬酒並賜御蓋的東吳猛將是誰？",
+        options: ["周泰", "甘寧", "潘璋", "丁奉"],
+        answer: 0,
+        explanation: "周泰屢次捨命救護孫權，全身傷痕累累；孫權在濡須口宴會上令周泰逐一指認傷疤並賜酒表彰，令眾將心服。"
+      },
+      {
+        category: "經典事件",
+        question: "在《三國演義》中，諸葛亮兩軍陣前與哪一位曹魏老司徒辯論大義，以一句「我從未見過如此厚顏無恥之人」將其當場氣死於馬下？",
+        options: ["華歆", "鍾繇", "王朗", "陳群"],
+        answer: 2,
+        explanation: "諸葛亮北伐時，七十六歲的王朗企圖在陣前說降諸葛亮，反被諸葛亮義正辭嚴痛斥，氣滿胸膛墜馬而死。"
+      },
+      {
+        category: "經典事件",
+        question: "在蜀漢滅亡被遷往洛陽後，面對司馬昭設宴試探並演奏蜀地音樂時，面不改色說出「此間樂，不思蜀」的蜀漢亡國之君是誰？",
+        options: ["劉璋", "劉表", "劉禪", "劉琮"],
+        answer: 2,
+        explanation: "後主劉禪（阿斗）在洛陽說出「此間樂，不思蜀」，讓司馬昭認定其毫無復國之心，因而保住了性命。"
+      },
+      {
+        category: "經典事件",
+        question: "在《三國演義》中，神醫華佗因提議用利斧劈開頭顱取出「風涎」以根治頭痛，反被哪一位多疑的梟雄懷疑欲行刺殺而下獄處死？",
+        options: ["董卓", "袁術", "孫權", "曹操"],
+        answer: 3,
+        explanation: "曹操久患頭風，聞華佗欲開顱治病便疑心其為關羽報仇行刺，遂將華佗囚禁拷打致死，導致《青囊書》失傳。"
+      }
+    ];
+
+    const app = document.getElementById("app");
+    const progressBar = document.getElementById("progressBar");
+
+    let quizList = [];
+    let currentIdx = 0;
+    let score = 0;
+    let userAnswers = [];
+    let answeredCurrent = false;
+    let reviewFilter = "all";
+
+    function shuffleArray(arr) {
+      const copy = [...arr];
+      for (let i = copy.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [copy[i], copy[j]] = [copy[j], copy[i]];
+      }
+      return copy;
+    }
+
+    function renderStart() {
+      progressBar.style.width = "0%";
+      app.innerHTML = `
+        <div class="center-screen">
+          <p>
+            本測驗精選 <strong>30 道《三國演義》經典與關鍵事件</strong>，考驗你能否從四位候選人物中精準認出事件主角！<br><br>
+            所有題目與選項順序皆經過均衡打亂，拒絕猜題套路，每題作答後均附詳細典故解析。
+          </p>
+          <div class="mode-options">
+            <button class="btn-primary" onclick="startQuiz(false)">標準順序挑戰（30 題）</button>
+            <button class="btn-secondary" onclick="startQuiz(true)">全隨機亂序挑戰（30 題）</button>
+          </div>
+        </div>
+      `;
+    }
+
+    function startQuiz(shuffleQuestions) {
+      const baseList = shuffleQuestions ? shuffleArray(RAW_QUIZ_DATA) : [...RAW_QUIZ_DATA];
+      // Also optionally shuffle options when playing in random mode while keeping answer index accurate
+      quizList = baseList.map(item => {
+        if (!shuffleQuestions) return item;
+        const correctText = item.options[item.answer];
+        const shuffledOpts = shuffleArray(item.options);
+        return {
+          ...item,
+          options: shuffledOpts,
+          answer: shuffledOpts.indexOf(correctText)
+        };
+      });
+
+      currentIdx = 0;
+      score = 0;
+      userAnswers = [];
+      renderQuestion();
+    }
+
+    function renderQuestion() {
+      answeredCurrent = false;
+      const q = quizList[currentIdx];
+      const progressPct = (currentIdx / quizList.length) * 100;
+      progressBar.style.width = `${progressPct}%`;
+
+      const letters = ["A", "B", "C", "D"];
+      const optionsHtml = q.options.map((opt, i) => `
+        <button class="option-btn" id="opt-${i}" onclick="selectOption(${i})">
+          <span class="option-prefix">${letters[i]}</span>
+          <span>${opt}</span>
+        </button>
+      `).join("");
+
+      app.innerHTML = `
+        <div class="meta-row">
+          <span class="badge">${q.category}</span>
+          <span>第 ${currentIdx + 1} / ${quizList.length} 題 ｜ 目前得分：${score}</span>
+        </div>
+        <div class="question-text">${q.question}</div>
+        <div class="options">${optionsHtml}</div>
+        <div class="feedback-box" id="feedbackBox"></div>
+        <div class="actions">
+          <button class="btn-secondary" onclick="confirmRestart()">重新開始</button>
+          <div class="actions-right">
+            <button class="btn-secondary" id="skipBtn" onclick="skipQuestion()">跳過此題</button>
+            <button class="btn-primary" id="nextBtn" style="display:none;" onclick="nextQuestion()">
+              ${currentIdx === quizList.length - 1 ? "查看總成績" : "下一題"}
+            </button>
+          </div>
+        </div>
+      `;
+    }
+
+    function confirmRestart() {
+      if (currentIdx === 0 && !answeredCurrent) {
+        renderStart();
+        return;
+      }
+      if (confirm("確定要放棄目前進度並返回主畫面嗎？")) {
+        renderStart();
+      }
+    }
+
+    function selectOption(selectedIdx) {
+      if (answeredCurrent) return;
+      answeredCurrent = true;
+
+      const q = quizList[currentIdx];
+      const isCorrect = selectedIdx === q.answer;
+      if (isCorrect) score++;
+
+      userAnswers.push({
+        question: q.question,
+        userChoice: q.options[selectedIdx],
+        correctChoice: q.options[q.answer],
+        explanation: q.explanation,
+        isCorrect
+      });
+
+      q.options.forEach((_, i) => {
+        const btn = document.getElementById(`opt-${i}`);
+        btn.disabled = true;
+        if (i === q.answer) btn.classList.add("correct");
+        else if (i === selectedIdx && !isCorrect) btn.classList.add("wrong");
+      });
+
+      showFeedback(isCorrect ? `回答正確！答案是「${q.options[q.answer]}」` : `回答錯誤，正確答案是「${q.options[q.answer]}」`, q.explanation);
+    }
+
+    function skipQuestion() {
+      if (answeredCurrent) return;
+      answeredCurrent = true;
+
+      const q = quizList[currentIdx];
+      userAnswers.push({
+        question: q.question,
+        userChoice: "（已跳過）",
+        correctChoice: q.options[q.answer],
+        explanation: q.explanation,
+        isCorrect: false
+      });
+
+      q.options.forEach((_, i) => {
+        const btn = document.getElementById(`opt-${i}`);
+        btn.disabled = true;
+        if (i === q.answer) btn.classList.add("correct");
+      });
+
+      showFeedback(`已跳過此題，正確答案是「${q.options[q.answer]}」`, q.explanation);
+    }
+
+    function showFeedback(title, text) {
+      const fb = document.getElementById("feedbackBox");
+      fb.innerHTML = `<strong>${title}</strong>${text}`;
+      fb.style.display = "block";
+      document.getElementById("skipBtn").style.display = "none";
+      document.getElementById("nextBtn").style.display = "inline-block";
+    }
+
+    function nextQuestion() {
+      currentIdx++;
+      if (currentIdx < quizList.length) {
+        renderQuestion();
+      } else {
+        reviewFilter = "all";
+        renderResults();
+      }
+    }
+
+    function getRank(s) {
+      if (s === 30) return { title: "太史史官・無一遺漏", desc: "三十題全中！整部《三國演義》的風雲人物與典故細節你都如數家珍。" };
+      if (s >= 25) return { title: "博古通今・三國通家", desc: "記憶力驚人！絕大多數經典與冷門橋段的主角都難不倒你。" };
+      if (s >= 18) return { title: "熟讀演義・識人有術", desc: "表現相當出色！你對三國主要人物的代表事蹟已有非常紮實的掌握。" };
+      if (s >= 10) return { title: "初窺門徑・漸入佳境", desc: "已經認出不少三國名將謀士的經典場面，再多回味幾回定能更上層樓。" };
+      return { title: "初出茅廬・重溫經典", desc: "三國英雄多如繁星、事蹟交織，不妨再翻閱幾回演義，下次再戰！" };
+    }
+
+    function setReviewFilter(filter) {
+      reviewFilter = filter;
+      renderResults();
+    }
+
+    function renderResults() {
+      progressBar.style.width = "100%";
+      const rank = getRank(score);
+
+      const filtered = userAnswers.map((item, idx) => ({ ...item, num: idx + 1 })).filter(item => {
+        if (reviewFilter === "wrong") return !item.isCorrect;
+        if (reviewFilter === "correct") return item.isCorrect;
+        return true;
+      });
+
+      const reviewHtml = filtered.length === 0
+        ? `<p style="text-align:center; color:var(--text-muted); padding: 16px 0;">此分類下沒有題目。</p>`
+        : filtered.map(item => `
+            <div class="review-item ${item.isCorrect ? "is-correct" : "is-wrong"}">
+              <div class="review-q">${item.num}. ${item.question}</div>
+              <div class="review-ans">
+                你的作答：${item.userChoice}<br>
+                ${item.isCorrect ? "" : `正確人物：${item.correctChoice}<br>`}
+                典故解析：${item.explanation}
+              </div>
+            </div>
+          `).join("");
+
+      app.innerHTML = `
+        <div class="center-screen">
+          <div class="score-circle">
+            <div class="score-num">${score}</div>
+            <div class="score-total">滿分 ${quizList.length} 題</div>
+          </div>
+          <div class="rank-title">${rank.title}</div>
+          <p style="margin-bottom: 18px;">${rank.desc}</p>
+          <div class="mode-options" style="margin-bottom: 8px;">
+            <button class="btn-primary" onclick="renderStart()">返回主畫面重玩</button>
+          </div>
+          <div class="review-controls">
+            <button class="filter-btn ${reviewFilter === "all" ? "active" : ""}" onclick="setReviewFilter('all')">全部題目 (${userAnswers.length})</button>
+            <button class="filter-btn ${reviewFilter === "wrong" ? "active" : ""}" onclick="setReviewFilter('wrong')">答錯 / 跳過 (${userAnswers.length - score})</button>
+            <button class="filter-btn ${reviewFilter === "correct" ? "active" : ""}" onclick="setReviewFilter('correct')">答對 (${score})</button>
+          </div>
+          <div class="review-list">${reviewHtml}</div>
+        </div>
+      `;
+    }
+
+    renderStart();
+  </script>
+</body>
+</html>
